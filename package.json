@@ -2,6 +2,7 @@
   "name": "primerproyecto---node",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
@@ -17,6 +18,8 @@
   "keywords": [],
   "author": "Suez y Dyner",
   "license": "ISC",
-  "description": ""
-  
+  "description": "",
+  "dependencies": {
+    "currency-map-country": "^1.0.12"
+  }
 }
