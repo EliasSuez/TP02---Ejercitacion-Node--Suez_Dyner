@@ -1,31 +1,45 @@
 import axios from "axios";
-const APIKEY = "7b62fa5d"; // Poné tu APIKEY, esta no funciona.
+const APIKEY = "f8465d28"; // Poné tu APIKEY
+const BASE_URL = "http://www.omdbapi.com/";
+
 const OMDBSearchByPage = async (searchText, page = 1) => {
-let returnObject = {
-respuesta : false,
-cantidadTotal : 0,
-datos : []
+    const response = await axios.get(`${BASE_URL}?apikey=${APIKEY}&s=${searchText}&page=${page}`);
+    return {
+        respuesta: response.data.Response === "True",
+        cantidadTotal: response.data.totalResults ? parseInt(response.data.totalResults, 10) : 0,
+        datos: response.data.Search || []
+    };
 };
-// No seas vago, acá hay que hacer el cuerpo de la función!!!
-return returnObject;
-};
+
 const OMDBSearchComplete = async (searchText) => {
-let returnObject = {
-respuesta : false,
-cantidadTotal : 0,
-datos : []
+    let returnObject = {
+        respuesta: false,
+        cantidadTotal: 0,
+        datos: []
+    };
+    
+    let page = 1;
+    while (true) {
+        const response = await axios.get(`${BASE_URL}?apikey=${APIKEY}&s=${searchText}&page=${page}`);
+        if (response.data.Response !== "True") break;
+        
+        returnObject.respuesta = true;
+        returnObject.cantidadTotal = parseInt(response.data.totalResults, 10);
+        returnObject.datos.push(...response.data.Search);
+        
+        if (returnObject.datos.length >= returnObject.cantidadTotal) break;
+        page++;
+    }
+    
+    return returnObject;
 };
-// No seas vago, acá hay que hacer el cuerpo de la función!!!
-return returnObject;
-};
+
 const OMDBGetByImdbID = async (imdbID) => {
-let returnObject = {
-respuesta : false,
-cantidadTotal : 0,
-datos : {}
+    const response = await axios.get(`${BASE_URL}?i=${imdbID}&apikey=${APIKEY}`);
+    return {
+        respuesta: response.data.Response === "True",
+        datos: response.data.Response === "True" ? response.data : {}
+    };
 };
-// No seas vago, acá hay que hacer el cuerpo de la función!!!
-return returnObject;
-};
-// Exporto todo lo que yo quiero exponer del módulo:
-export {OMDBSearchByPage, OMDBSearchComplete, OMDBGetByImdbID};
+
+export { OMDBSearchByPage, OMDBSearchComplete, OMDBGetByImdbID };
